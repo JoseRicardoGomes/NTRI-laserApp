@@ -1,0 +1,6 @@
+g++ main.cpp -o laserApp -lopencv2_opencv -lopencv2_imgproc -lopencv2_core -lopencv2_highgui 
+
+
+-lopencv_calib3d -lopencv_contrib -lopencv_core -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgproc -lopencv_legacy -lopencv_ml -lopencv_nonfree -lopencv_objdetect -lopencv_photo -lopencv_stitching -lopencv_superres -lopencv_ts -lopencv_video -lopencv_videostab
+
+g++ -o exe main.cpp $(pkg-config opencv --cflags --libs)
