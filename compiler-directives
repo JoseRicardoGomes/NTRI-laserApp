@@ -1,2 +1,5 @@
+Assuming you have the opencv libraries installed in the default GNU/Linux prefix path
+I'm planing to add a make file (cmake to be more specific) somewere in the future
+
 To compile the executable use the following gcc/g++ command
 g++ -o exe main.cpp $(pkg-config opencv --cflags --libs)
