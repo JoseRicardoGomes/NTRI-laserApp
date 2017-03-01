@@ -95,10 +95,10 @@ void GPIO::step4(int const a, int const a1, int const b, int const b1){
 //WARNING: Be sure to call the GPIOreset function before inverting directions.
 //Full step sequence to rotate left
 void sequenceL(int const a, int const a1, inst const b, int const b1){
-	step1(a, a1, b, b1);
-	step2(a, a1, b, b1);
-	step3(a, a1, b, b1);
-	step4(a, a1, b, b1);
+	step1(a,a1,b,b1);
+	step2(a,a1,b,b1);
+	step3(a,a1,b,b1);
+	step4(a,a1,b,b1);
 }
 //Full step sequence to rotate right (inversion of left)
 void sequenceR(int const a, int const a1, inst const b, int const b1){

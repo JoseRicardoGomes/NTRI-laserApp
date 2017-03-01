@@ -1,6 +1,6 @@
 /***********************************************************
 Universidade Lusiada de VN de Famalicão                    *
-NTRI - tracking camera POC                                 *
+NTRI - tracking camera Proof Of Concept                    *
                                                            *
 2016-2017                                                  *
                                                            *
@@ -25,8 +25,47 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
     }
 }
 
+void XfollowFunc(int objx, int imgWidth){
+	if(objx < imgWidth/2){
+		//execute the left routine
+		gpio.sequenceL(gpio.BaseA1,gpio.BaseA2,gpio.BaseB1,gpio.BaseB2);
+	}
+	else if(objx > imgWidth/2){
+		//execute the right routine
+		gpio.sequenceR(gpio.BaseA1,gpio.BaseA2,gpio.BaseB1,gpio.BaseB2);
+	}
+	else{
+		continue;
+	}
+}
+
+void YfollowFunc(int objy, int imgHeight){
+		if(objy < imgHeight/2){
+		//execute the down routine
+		gpio.sequenceL(gpio.CameraA1,gpio.CameraA2,gpio.CameraB1,gpio.CameraB2);
+	}
+	if(objy > imgHeight/2){
+		//execute the up routine
+		gpio.sequenceR(gpio.CameraA1,gpio.CameraA2,gpio.CameraB1,gpio.CameraB2);
+	}
+	else{
+		cout<< "Target located ready to deploy."<<endl;
+		continue;
+	}
+}
+
 int main()
 {
+
+	int objx;
+	int objy;
+	int imgHeight = procImg.imgHeight;
+	int imgWidth = procImg.imgWidth;
+
+	//gpio pinout mode setting
+	gpio.SetGPIOpinModeBase(gpio.BaseA1, gpio.BaseA2, gpio.BaseB1, gpio.BaseB2);
+	gpio.SetGPIOpinModeCamera(gpio.CameraA1, gpio.CameraA2, gpio.CameraB1, gpio.CameraB2);
+
     //Create a window
     namedWindow("ImageDisplay", CV_WINDOW_AUTOSIZE);
     namedWindow("ImageThreshold", CV_WINDOW_AUTOSIZE);
@@ -37,50 +76,32 @@ int main()
 	//show the image
     // Wait until user press some key
     while(true){
-      procImg.setImg();
-      procImg.morph();
-      procImg.trackObject();
-      procImg.drawObject();
+    	procImg.setImg();
+     	procImg.morph();
+    	procImg.trackObject();
+    	procImg.drawObject();
 
-      img = procImg.getImg();
-      imgThreshold = procImg.getImgThreshold();
+    	img = procImg.getImg();
+    	imgThreshold = procImg.getImgThreshold();
 
-      imshow("ImageDisplay", img);
-      imshow("ImageThreshold", imgThreshold);
-      
+    	objx = procImg.posX;
+		objy = procImg.posY;
+		
+    	imshow("ImageDisplay", img);
+    	
+    	//we not show this on the pi.
+    	//imshow("ImageThreshold", imgThreshold);
 
-	//TODO: Wrap the follow decision structure in it's own funtion
-	//we can also define a new data structure with the sequences (left, right, up and down)
-	//Possibly some sort of threshHold will be needed
+    //Follow functions calls 
+	//for future scalabilty we can paralelize this structure in 2 threads, one for each axle
+	//###################################################################################################  
+     	XfollowFunc(objx,imgWidth);
+     	YfollowFunc(objy,imgHeight);
 	//###################################################################################################
-	//for future scalabilty we can paralelize this structure in 2 threads one for each axle
-	  
-	if(procImg.posX < procImg.imgWidth / 2){
-		//execute the left routine
-		gpio.sequenceL();
-	}
-	else if(procImg.posX > procImg.imgWidth / 2){
-		//execute the right routine
-		gpio.sequenceR();
-	}
-	else if(procImg.posY < procImg.imgHeight / 2){
-		//execute the down routine
-		gpio.sequenceL();
-	}
-	else if(procImg.posY > procImg.imgHeight / 2){
-		//execute the up routine
-		gpio.sequenceR();
-	}
-	else{
-		cout<< "Target located ready to deploy."<<endl;
-		continue;
-	}
-	gpio.GPIOreset();
-	 //################################################################################################### 
+		gpio.GPIOreset(); 
       if(waitKey(20) == 27)
         break;
     }
 
     return 0;
-
 }

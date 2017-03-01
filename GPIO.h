@@ -1,6 +1,6 @@
 /***********************************************************
 Universidade Lusiada de VN de Famalicão                    *
-NTRI - tracking camera POC                                 *
+NTRI - tracking camera Proof Of Concept                    *
                                                            *
 2016-2017                                                  *
                                                            *
