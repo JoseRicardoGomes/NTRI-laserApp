@@ -1,3 +1,11 @@
+/***********************************************************
+Universidade Lusiada de VN de Famalicão                    *
+NTRI - tracking camera POC                                 *
+                                                           *
+2016-2017                                                  *
+                                                           *
+By: Filipe Santos and JRG                                  *
+***********************************************************/
 #ifndef PROCESSINGIMAGE_H
 #define PROCESSINGIMAGE_H
 
@@ -32,6 +40,14 @@ public:
     Mat getImg();
     Mat getImgThreshold();
     vector<int> getHSV();
+
+    //Height and width of the image for some calculations
+    int imgWidth;
+    int imgHeight;
+    //Object coordinates -> center of object rectangle
+    //Initializing is the center of the image
+    int posX;
+    int posY;
 private:
     //H S V values from imageHSV
     int H_Min;
@@ -40,13 +56,6 @@ private:
     int S_Max;
     int V_Min;
     int V_Max;
-    //Height and width of the image for some calculations
-    int imgWidth;
-    int imgHeight;
-    //Object coordinates -> center of object rectangle
-    //Initializing is the center of the image
-    int posX;
-    int posY;
     //Tracking object function
     //Object not to be deleted
     int NonDeleteObject;

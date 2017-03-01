@@ -1,3 +1,12 @@
+/***********************************************************
+Universidade Lusiada de VN de Famalicão                    *
+NTRI - tracking camera POC                                 *
+                                                           *
+2016-2017                                                  *
+                                                           *
+By: Filipe Santos and JRG                                  *
+***********************************************************/
+
 #include "processingImage.h"
 
 processingImage::processingImage()
@@ -9,7 +18,6 @@ processingImage::processingImage()
     imgHeight = img.rows;
     posX = 0;
     posY = 0;
-
     H_Min = 0;
     H_Max = 180;
     S_Min = 0;
