@@ -9,15 +9,12 @@ By: Filipe Santos and JRG                                  *
 
 #ifndef WIRINGPI_H
 #define WIRINGPI_H
-#ifndef PROCESSINGIMAGE_H
-#define PROCESSINGIMAGE_H
 
-#include <WiringPi.h>
-#include <processingImage.h>
+#include <wiringPi.h>
+
 using namespace std;
-using namespace WiringPi;
 
-Class GPIO{
+class GPIO{
 
 	public:
 	GPIO();
@@ -25,24 +22,26 @@ Class GPIO{
 	void setGPIOpinModeBase(int,int,int,int);
 	void setGPIOpinModeCamera(int,int,int,int);
 	void GPIOreset();
-	void step1(const int,const int,const int,const int);
-	void step2(const int,const int,const int,const int);
-	void step3(const int,const int,const int,const int);
-	void step4(const int,const int,const int,const int);
-	void sequenceL();
-	void sequenceR();
-	
+	void step1(int, int, int, int);
+	void step2(int, int, int, int);
+	void step3(int, int, int, int);
+	void step4(int, int, int, int);
+	void sequenceL(int, int, int, int);
+	void sequenceR(int, int, int, int);
+	void igitalWrite(int,int const);
 	//@params: BaseA1,BaseA2,BaseB1,BaseB2 are the pin numbers that will control de coils of the base stepper. In this context will be called IDs.
-	int const BaseA1;
-	int const BaseA2;
-	int const BaseB1;
-	int const BaseB2;
+	int BaseA1;
+	int BaseA2;
+	int BaseB1;
+	int BaseB2;
 	//@params: CameraA1, CameraA2, CameraB1, CameraB2; are the pin numbers that will control de camera stepper. As stated above.
-	int const CameraA1;
-	int const CameraA2;
-	int const CameraB1; 
-	int const CameraB2;
+	int CameraA1;
+	int CameraA2;
+	int CameraB1; 
+	int CameraB2;
+	
+	int const H = 1;
+	int const L = 0;
 };
 
 #endif //WIRINGPI_H
-#endif //PROCESSINGIMAGE_H

@@ -8,7 +8,9 @@ By: Filipe Santos and JRG                                  *
 ***********************************************************/
 
 #include "processingImage.cpp"
+#include "GPIO.h"
 #include "GPIO.cpp"
+#include <wiringPi.h>
 
 using namespace std;
 using namespace cv;
@@ -22,21 +24,8 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
         cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
         procImg.setHSV(x, y);
         procImg.setPosxPosy(x, y);
-    }
-}
 
-void XfollowFunc(int objx, int imgWidth){
-	if(objx < imgWidth/2){
-		//execute the left routine
-		gpio.sequenceL(gpio.BaseA1,gpio.BaseA2,gpio.BaseB1,gpio.BaseB2);
-	}
-	else if(objx > imgWidth/2){
-		//execute the right routine
-		gpio.sequenceR(gpio.BaseA1,gpio.BaseA2,gpio.BaseB1,gpio.BaseB2);
-	}
-	else{
-		continue;
-	}
+    }
 }
 
 void YfollowFunc(int objy, int imgHeight){
@@ -49,30 +38,45 @@ void YfollowFunc(int objy, int imgHeight){
 		gpio.sequenceR(gpio.CameraA1,gpio.CameraA2,gpio.CameraB1,gpio.CameraB2);
 	}
 	else{
-		cout<< "Target located ready to deploy."<<endl;
-		continue;
+		cout<< "Target Y located ready to deploy."<<endl;
 	}
 }
 
-int main()
+void XfollowFunc(int objx, int imgWidth){
+	if(objx < imgWidth/2){
+		//execute the left routine
+		gpio.sequenceL(gpio.BaseA1,gpio.BaseA2,gpio.BaseB1,gpio.BaseB2);
+	}
+	else if(objx > imgWidth/2){
+		//execute the right routine
+		gpio.sequenceR(gpio.BaseA1,gpio.BaseA2,gpio.BaseB1,gpio.BaseB2);
+	}
+	else{
+		cout<< "Target X located ready to deploy."<<endl;
+	}
+}
+
+int main(void)
 {
 
-	int objx;
-	int objy;
-	int imgHeight = procImg.imgHeight;
-	int imgWidth = procImg.imgWidth;
+int objx;
+int objy;
+int imgHeight = procImg.imgHeight;
+int imgWidth = procImg.imgWidth;
 
-	//gpio pinout mode setting
-	gpio.SetGPIOpinModeBase(gpio.BaseA1, gpio.BaseA2, gpio.BaseB1, gpio.BaseB2);
-	gpio.SetGPIOpinModeCamera(gpio.CameraA1, gpio.CameraA2, gpio.CameraB1, gpio.CameraB2);
+wiringPiSetup();
 
-    //Create a window
-    namedWindow("ImageDisplay", CV_WINDOW_AUTOSIZE);
-    namedWindow("ImageThreshold", CV_WINDOW_AUTOSIZE);
+//gpio pinout mode setting
+gpio.setGPIOpinModeBase(gpio.BaseA1, gpio.BaseA2, gpio.BaseB1, gpio.BaseB2);
+gpio.setGPIOpinModeCamera(gpio.CameraA1, gpio.CameraA2, gpio.CameraB1, gpio.CameraB2);
 
-    //set the callback function for any mouse event
-    setMouseCallback("ImageDisplay", CallBackFunc, NULL);
-    
+//Create a window
+namedWindow("ImageDisplay", CV_WINDOW_AUTOSIZE);
+namedWindow("ImageThreshold", CV_WINDOW_AUTOSIZE);
+
+//set the callback function for any mouse event
+setMouseCallback("ImageDisplay", CallBackFunc, NULL);
+
 	//show the image
     // Wait until user press some key
     while(true){
@@ -80,28 +84,29 @@ int main()
      	procImg.morph();
     	procImg.trackObject();
     	procImg.drawObject();
-
-    	img = procImg.getImg();
-    	imgThreshold = procImg.getImgThreshold();
+	
+    	//imgThreshold = procImg.getImgThreshold();
 
     	objx = procImg.posX;
-		objy = procImg.posY;
-		
-    	imshow("ImageDisplay", img);
-    	
+	objy = procImg.posY;
+
+    	imshow("ImageDisplay", procImg.getImg());
+
     	//we not show this on the pi.
     	//imshow("ImageThreshold", imgThreshold);
 
-    //Follow functions calls 
+	 //Follow functions calls
 	//for future scalabilty we can paralelize this structure in 2 threads, one for each axle
-	//###################################################################################################  
+	//###################################################################################################
      	XfollowFunc(objx,imgWidth);
      	YfollowFunc(objy,imgHeight);
 	//###################################################################################################
-		gpio.GPIOreset(); 
-      if(waitKey(20) == 27)
+	gpio.GPIOreset();
+    if(waitKey(20) == 27){
         break;
     }
-
+    }
     return 0;
-}
+    }
+  
+
