@@ -1,5 +1,5 @@
 /***********************************************************
-Universidade Lusiada de VN de Famalic„o                    *
+Universidade Lusiada de VN de Famalic√£o                    *
 NTRI - tracking camera Proof Of Concept                    *
                                                            *
 2016-2017                                                  *
@@ -28,7 +28,7 @@ class GPIO{
 	void step4(int, int, int, int);
 	void sequenceL(int, int, int, int);
 	void sequenceR(int, int, int, int);
-	void igitalWrite(int,int const);
+	void digitalWrite(int,int const);
 	//@params: BaseA1,BaseA2,BaseB1,BaseB2 are the pin numbers that will control de coils of the base stepper. In this context will be called IDs.
 	int BaseA1;
 	int BaseA2;
